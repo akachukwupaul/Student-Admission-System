@@ -29,11 +29,13 @@ namespace NewStudentAdmissionSystem.Controllers
         {
             return View();
         }
-        [Authorize(Roles = "User")]
-        public IActionResult User()
-        {
-            return View();
-        }
+
+        //[Authorize(Roles = "User")]
+
+        //public IActionResult User()
+        //{
+        //    return View();
+        //}
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

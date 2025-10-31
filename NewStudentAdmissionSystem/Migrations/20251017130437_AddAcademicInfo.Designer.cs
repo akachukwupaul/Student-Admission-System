@@ -12,8 +12,8 @@ using NewStudentAdmissionSystem.Data;
 namespace NewStudentAdmissionSystem.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251008211726_Name Migration")]
-    partial class NameMigration
+    [Migration("20251017130437_AddAcademicInfo")]
+    partial class AddAcademicInfo
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -158,6 +158,107 @@ namespace NewStudentAdmissionSystem.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("NewStudentAdmissionSystem.Models.Course", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Courses");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Computer Engineering"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Electrical Engineering"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Microbiology"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Mass communication"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Medicine"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "Law"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Name = "Accounting"
+                        });
+                });
+
+            modelBuilder.Entity("NewStudentAdmissionSystem.Models.StudentApplication", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AcademicInfo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ApplicationNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DateOfApplication")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateOfBirth")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EmailAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
+
+                    b.ToTable("StudentApplications");
+                });
+
             modelBuilder.Entity("NewStudentAdmissionSystem.Models.Users", b =>
                 {
                     b.Property<string>("Id")
@@ -276,6 +377,17 @@ namespace NewStudentAdmissionSystem.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("NewStudentAdmissionSystem.Models.StudentApplication", b =>
+                {
+                    b.HasOne("NewStudentAdmissionSystem.Models.Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
                 });
 #pragma warning restore 612, 618
         }

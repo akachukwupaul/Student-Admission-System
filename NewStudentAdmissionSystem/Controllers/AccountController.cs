@@ -31,11 +31,15 @@ namespace NewStudentAdmissionSystem.Controllers
             {
                 return View(model);
             }
+            var user = await userManager.FindByEmailAsync(model.Email);
 
             var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
             if (result.Succeeded)
             {
-                return RedirectToAction("Index", "Home");
+                if (await userManager.IsInRoleAsync(user, "Admin"))
+                    return RedirectToAction("Dashboard", "Admin");
+                else if (await userManager.IsInRoleAsync(user, "User"))
+                    return RedirectToAction("Dashboard", "Student");
             }
             ModelState.AddModelError(string.Empty, "Invalid Login attempt");
             return View(model);

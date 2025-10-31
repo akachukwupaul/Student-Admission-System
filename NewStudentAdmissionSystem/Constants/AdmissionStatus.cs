@@ -1,6 +1,9 @@
 ﻿namespace NewStudentAdmissionSystem.Constants
 {
-    public class AdmissionStatus
+    public enum AdmissionStatus
     {
+        PENDING,
+        ACCEPTED,
+        REJECTED
     }
 }

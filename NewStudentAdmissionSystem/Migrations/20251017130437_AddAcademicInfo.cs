@@ -5,7 +5,7 @@
 namespace NewStudentAdmissionSystem.Migrations
 {
     /// <inheritdoc />
-    public partial class NameMigration : Migration
+    public partial class AddAcademicInfo : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

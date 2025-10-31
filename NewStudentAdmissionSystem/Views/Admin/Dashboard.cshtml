@@ -1,5 +1,51 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<NewStudentAdmissionSystem.Models.StudentApplication>
 @{
+    ViewData["Title"] = "Admin Dashboard";
 }
+<h2>Admin Dashboard</h2>
+<div class="col-12">
+<form action="Dashboard" method="get">
+    <input type="text" name="searchsString" placeholder="Search by name or application number" />
+    <button type="submit">Search</button>
+</form>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>Name</tr>
+        <tr>Application Number</tr>
+        <tr>Status</tr>
+        <tr>Registration Date</tr>
+        <tr>Course</tr>
+    </thead>
+    <tbody>
+        @foreach(var student in Model)
+        {
+            <tr>
+                <td>@student.FirstName @student.LastName</td>
+                <td>@student.ApplicationNumber</td>
+                <td>@student.Status</td>
+                <td>@student.DateOfApplication.ToShortDateString()</td>
+                <td>@student.Course.Name</td>
+                <td>
+                    <span class= "badge bg-@(student.Status == NewStudentAdmissionSystem.Constants.AdmissionStatus.ACCEPTED? "success" : student.Status == NewStudentAdmissionSystem.Constants.AdmissionStatus.REJECTED? "danger" :"Warning")" > 
+                        @student.Status
+                    </span>
+                </td>
+                <td>@student.DateOfApplication.ToShortDateString()</td>
+                <td>
+                    <a asp-action="Details" asp-route-Id ="@student.Id" class="btn btn-info">View</a>
+                    <form asp-action="UpdateAction" method="post" style="display:inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@student.Id" />
+                        <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+                            <option value="PENDING" selected="@(student.Status == NewStudentAdmissionSystem.Constants.AdmissionStatus.PENDING)" >Pending</option>
+                            <option value="ACCEPTED" selected="@(student.Status == NewStudentAdmissionSystem.Constants.AdmissionStatus.ACCEPTED)">Accepted</option>
+                            <option value="REJECTED" selected="@(student.Status == NewStudentAdmissionSystem.Constants.AdmissionStatus.REJECTED)">Rejected</option>
+                        </select>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
