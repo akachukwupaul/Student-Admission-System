@@ -24,11 +24,17 @@ namespace NewStudentAdmissionSystem.Controllers
             return View();
         }
 
-        [Authorize (Roles = "Admin")]
-        public IActionResult Admin()
+        public IActionResult Apply()
         {
-            return View();
+            // Redirect to application form
+            return RedirectToAction("ApplicationForm", "Admission");
         }
+
+        //[Authorize (Roles = "Admin")]
+        //public IActionResult Admin()
+        //{
+        //    return View();
+        //}
 
         //[Authorize(Roles = "User")]
 

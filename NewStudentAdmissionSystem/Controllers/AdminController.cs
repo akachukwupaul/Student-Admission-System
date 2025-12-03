@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using NewStudentAdmissionSystem.Constants;
 using NewStudentAdmissionSystem.Data;
 using NewStudentAdmissionSystem.Models;
+using X.PagedList;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace NewStudentAdmissionSystem.Controllers
 {
@@ -17,23 +19,41 @@ namespace NewStudentAdmissionSystem.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Dashboard(string searchString)
+        public async Task<IActionResult> Dashboard(string searchString, int page = 1)
         {
-            var application = from a in _Context.StudentApplications
-                              .Include(c => c.Course)
-                              select a;
-            if (!string.IsNullOrEmpty(searchString))
+            int PageSize = 7;
+
+            // Starts building an IQueryable expression from the StudentApplications DbSet.
+            var query = _Context.StudentApplications
+                              .Include(s => s.Course)
+                              .AsQueryable();
+
+            // Checks if the user provided a non-empty, non-whitespace search term.
+            if (!string.IsNullOrWhiteSpace(searchString))
             {
-                application = application.Where(s => s.FirstName.ToUpper().Contains(searchString.ToUpper()) ||
-                                                     s.LastName.ToUpper().Contains(searchString.ToUpper()) ||
-                                                     s.ApplicationNumber.Contains(searchString));
+               query = query.Where(s =>
+               (s.FirstName != null && s.FirstName.Contains(searchString)) ||
+               (s.LastName != null && s.LastName.Contains(searchString)) ||
+               (s.ApplicationNumber != null && s.ApplicationNumber.Contains(searchString)) ||
+               (s.Course != null && s.Course.Name.Contains(searchString))
+               );
+
             }
-            return View(await application.ToListAsync());
+            // Stores the search term in the ViewBag so the view can retain the search value in the form input
+            // and correctly generate pagination links that include the search filter.
+            ViewBag.SearchString = searchString;
+            var paginatedData = await query
+                .OrderByDescending(s => s.Id)
+                .ToPagedListAsync(page, PageSize);
+
+            return View(paginatedData);
+            // return View(await application.ToListAsync());
         }
 
         [HttpGet]
         public async Task<IActionResult> Details(int? id)
         {
+            // Checks if the 'id' passed in the URL is null
             if (id == null)
             {
                 return NotFound();
@@ -53,6 +73,8 @@ namespace NewStudentAdmissionSystem.Controllers
         public async Task<IActionResult> UpdateStatus(int id, AdmissionStatus status)
         {
             var student = await _Context.StudentApplications.FindAsync(id);
+
+            // Checks if the student application record was successfully found.
             if (student == null)
             {
                 return NotFound();
@@ -60,6 +82,7 @@ namespace NewStudentAdmissionSystem.Controllers
             student.Status = status;
             _Context.Update(student);
             await _Context.SaveChangesAsync();
+           
 
             return RedirectToAction(nameof(Dashboard));
         }

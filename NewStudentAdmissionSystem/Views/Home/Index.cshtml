@@ -1,8 +1,21 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Student Admission Portal";
+    Layout = "_Layout";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container">
+    <div class="row justify-content-center align-items-center" style="min-height: 80vh;">
+        <div class="col-md-8 text-center">
+            <h1 class="display-4 mb-4">Student Admission Portal</h1>
+            <p class="lead mb-5">
+                Apply for admission and start your academic journey with us.
+            </p>
+
+            <div class="d-grid gap-3 d-md-flex justify-content-md-center">
+                <a href="@Url.Action("Login", "Account")" class="btn btn-success btn-lg px-5">
+                    Apply Now
+                </a>            
+            </div>
+        </div>
+    </div>
 </div>

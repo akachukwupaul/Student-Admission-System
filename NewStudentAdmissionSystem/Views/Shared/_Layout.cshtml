@@ -8,12 +8,16 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/NewStudentAdmissionSystem.styles.css" asp-append-version="true" />
+    
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">NewStudentAdmissionSystem</a>
+              @*   <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">NewStudentAdmissionSystem</a> *@
+                <a class="navbar-brand text-success fw-bold" href="@Url.Action("Index", "Home")">
+                    Student Portal
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -26,23 +30,59 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                    @*     @if (User.IsInRole("Admin"))
+
+                      @*   <li class="nav-item">
+                            <a class="nav-link" asp-controller="Account" asp-action="Login">Check Admission Status</a>
+                        </li> *@
+                        @if (User.IsInRole("User"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Student" asp-action="CheckStatus">Check Admission Status</a>
+                            </li>
+                        }
+
+                        @*     @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="Home" asp-action="Admin">Admin</a>
                             </li>
-                        }
-                        @if (User.IsInRole("User"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Home" asp-action="User">User</a>
-                            </li>
-                        } *@
+                        }*@
+                     
+                       
                         <partial name="_LoginPartial" />
                     </ul>
                 </div>
             </div>
         </nav>
+        <!-- Bootstrap 5 CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+        <style>
+            body {
+                background-color: #f8f9fa;
+            }
+
+            .btn-success {
+                background-color: #28a745;
+                border-color: #28a745;
+            }
+
+                .btn-success:hover {
+                    background-color: #218838;
+                    border-color: #218838;
+                }
+
+            .btn-outline-success {
+                color: #28a745;
+                border-color: #28a745;
+            }
+
+                .btn-outline-success:hover {
+                    background-color: #28a745;
+                    border-color: #28a745;
+                    color: white;
+                }
+        </style>
     </header>
     <div class="container">
         <main role="main" class="pb-3">

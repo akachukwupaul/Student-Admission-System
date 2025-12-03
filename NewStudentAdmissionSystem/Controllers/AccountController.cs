@@ -33,6 +33,7 @@ namespace NewStudentAdmissionSystem.Controllers
             }
             var user = await userManager.FindByEmailAsync(model.Email);
 
+            // Core sign-in operation: attempts to sign the user in using their credentials.
             var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
             if (result.Succeeded)
             {
@@ -57,6 +58,7 @@ namespace NewStudentAdmissionSystem.Controllers
             {
                 return View(model);
             }
+            // Creates a new instance of the custom user entity (Users) and maps data from the ViewModel.
             var user = new Users
             {
                 FullName = model.Name,
@@ -65,6 +67,7 @@ namespace NewStudentAdmissionSystem.Controllers
                 Email = model.Email,
                 NormalizedEmail = model.Email.ToUpper()
             };
+            // Attempts to create the new user in the database, automatically hashing the password.
             var result = await userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
@@ -74,10 +77,15 @@ namespace NewStudentAdmissionSystem.Controllers
                     var role = new IdentityRole("User");
                     await roleManager.CreateAsync(role);
                 }
+                // Assigns the newly created user to the "User" role.
                 await userManager.AddToRoleAsync(user, "User");
+
+                // Signs the user in immediately after successful registration.
                 await signInManager.SignInAsync(user, isPersistent: false);
                 return RedirectToAction("Login", "Account");
             }
+            // If creation failed (e.g., duplicate email, weak password), iterates through errors 
+            // and adds them to ModelState to be displayed in the view.
             foreach (var error in result.Errors)
             {
                 ModelState.AddModelError(string.Empty, error.Description);
@@ -122,12 +130,14 @@ namespace NewStudentAdmissionSystem.Controllers
                 ModelState.AddModelError("", "something went wrong");
                 return View(model);
             }
+            // Retrieves the user object from the database using their email/username.
             var user = await userManager.FindByNameAsync(model.Email);
              if (user == null)
              {
                 ModelState.AddModelError("", "User not found");
                 return View(model);
              }
+            // Removes the user's existing password hash from the database.
             var result = await userManager.RemovePasswordAsync(user);
             if (result.Succeeded)
             {

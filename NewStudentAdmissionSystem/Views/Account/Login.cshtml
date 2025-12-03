@@ -19,7 +19,13 @@
             </div>
             <div class="mb-3">
                 <label asp-for="Password" class="form-label"></label>
-                <input asp-for="Password" class="form-control" />
+                <div class="input-group">
+                    <input asp-for="Password" class="form-control" id="passwordInput" />
+
+                    <button type="button" class="btn btn-outline-secondary" id="togglePassword">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                </div>
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
             <div class="float-end">
@@ -42,3 +48,23 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial.cshtml");
     }
  }
+<script>
+    // Gets a reference to the HTML input element where the user types the password (its type is likely "password").
+    const passwordField = document.getElementById("passwordInput");
+
+    // Gets a reference to the HTML button or icon element that the user clicks to toggle visibility.
+    const toggleBtn = document.getElementById("togglePassword");
+
+    // Attaches an event listener to the toggle button. This function will execute every time the button is clicked.
+    toggleBtn.addEventListener("click", function () {
+        const isPassword = passwordField.type === "password";
+
+        // If isPassword is true (it's currently obscured), set the type to "text" (show characters).
+        // If isPassword is false (it's currently visible), set the type back to "password" (hide characters).
+        passwordField.type = isPassword ? "text" : "password";
+        
+        toggleBtn.textContent = isPassword ? "Hide" : "Show";
+
+
+    });
+</script>
