@@ -19,29 +19,43 @@ namespace NewStudentAdmissionSystem.Controllers
         }
 
         [HttpGet]
+        public IActionResult AdminHome()
+        {
+            return View();
+        }
+
+        private IQueryable<StudentApplication> BuildStudentQuery(string searchString)
+        {
+            // 1. Initialize Query
+            var query = _Context.StudentApplications
+                .Include(s => s.Course) // Eager loading
+                .AsQueryable();
+
+            // 2. Apply Search Filter
+            if (!string.IsNullOrWhiteSpace(searchString))
+            {
+                query = query.Where(s =>
+                    (s.FirstName != null && s.FirstName.Contains(searchString)) ||
+                    (s.LastName != null && s.LastName.Contains(searchString)) ||
+                    (s.ApplicationNumber != null && s.ApplicationNumber.Contains(searchString)) ||
+                    (s.Course != null && s.Course.Name.Contains(searchString))
+                );
+            }
+
+            return query;
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Dashboard(string searchString, int page = 1)
         {
             int PageSize = 7;
 
-            // Starts building an IQueryable expression from the StudentApplications DbSet.
-            var query = _Context.StudentApplications
-                              .Include(s => s.Course)
-                              .AsQueryable();
+            // CALL THE HELPER: Build the dynamic query.
+            var query = BuildStudentQuery(searchString);
 
-            // Checks if the user provided a non-empty, non-whitespace search term.
-            if (!string.IsNullOrWhiteSpace(searchString))
-            {
-               query = query.Where(s =>
-               (s.FirstName != null && s.FirstName.Contains(searchString)) ||
-               (s.LastName != null && s.LastName.Contains(searchString)) ||
-               (s.ApplicationNumber != null && s.ApplicationNumber.Contains(searchString)) ||
-               (s.Course != null && s.Course.Name.Contains(searchString))
-               );
-
-            }
-            // Stores the search term in the ViewBag so the view can retain the search value in the form input
-            // and correctly generate pagination links that include the search filter.
+            // Continue with view setup and execution.
             ViewBag.SearchString = searchString;
+
             var paginatedData = await query
                 .OrderByDescending(s => s.Id)
                 .ToPagedListAsync(page, PageSize);
@@ -49,11 +63,30 @@ namespace NewStudentAdmissionSystem.Controllers
             return View(paginatedData);
             // return View(await application.ToListAsync());
         }
+        [HttpGet]
+        public async Task<IActionResult> StudentRecords(string searchString, int page = 1)
+        {
+            int PageSize = 7;
+
+            // CALL THE HELPER: Use the identical logic here.
+            var query = BuildStudentQuery(searchString);
+
+            // Continue with view setup and execution.
+            ViewBag.SearchString = searchString;
+
+            var paginatedData = await query
+                .OrderByDescending(s => s.Id)
+                .ToPagedListAsync(page, PageSize);
+
+            // Note: This will return the StudentRecords view.
+            return View(paginatedData);
+        }
+
 
         [HttpGet]
         public async Task<IActionResult> Details(int? id)
         {
-            // Checks if the 'id' passed in the URL is null
+            
             if (id == null)
             {
                 return NotFound();
@@ -86,5 +119,54 @@ namespace NewStudentAdmissionSystem.Controllers
 
             return RedirectToAction(nameof(Dashboard));
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {         
+            var student = await _Context.StudentApplications.FirstOrDefaultAsync(x => x.Id == id);
+            if (student == null)
+            {
+                return NotFound();
+            }
+            return View(student);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("id, FirstName, LastName, EmailAddress, CourseId, PhoneNumber, DateOfBirth, DateOfApplication")] StudentApplication student)
+        {
+            if (id != student.Id)
+            {
+                return NotFound();
+            }
+            if (ModelState.IsValid)
+            {
+                _Context.Update(student);
+                await _Context.SaveChangesAsync();
+                return RedirectToAction(nameof(Dashboard));
+            }
+            return View(student);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var student = await _Context.StudentApplications.FirstOrDefaultAsync();
+            return View(student);
+
+
+        }
+
+        [HttpPost, ActionName("Delete")]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var student = await _Context.StudentApplications.FindAsync(id);
+            if (student != null)
+            {
+                _Context.StudentApplications.Remove(student);
+                await _Context.SaveChangesAsync();
+            }
+            return RedirectToAction("Dashboard");
+        }
+
     }
 }

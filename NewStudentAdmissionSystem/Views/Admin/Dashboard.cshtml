@@ -3,7 +3,11 @@
 @using X.PagedList.Web.Common
 @{
     ViewData["Title"] = "Admin Dashboard";
+    Layout = "_AdminLayout";
 }
+@* @{
+    Layout = "_AdminLayout";
+} *@
 <h2>Admin Dashboard</h2>
 <form asp-action="Dashboard" method="get" class="mb-3">
     <div class="input-group">

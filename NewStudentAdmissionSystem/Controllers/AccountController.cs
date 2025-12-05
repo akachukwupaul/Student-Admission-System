@@ -38,7 +38,7 @@ namespace NewStudentAdmissionSystem.Controllers
             if (result.Succeeded)
             {
                 if (await userManager.IsInRoleAsync(user, "Admin"))
-                    return RedirectToAction("Dashboard", "Admin");
+                    return RedirectToAction("AdminHome", "Admin");
                 else if (await userManager.IsInRoleAsync(user, "User"))
                     return RedirectToAction("Dashboard", "Student");
             }
@@ -67,7 +67,7 @@ namespace NewStudentAdmissionSystem.Controllers
                 Email = model.Email,
                 NormalizedEmail = model.Email.ToUpper()
             };
-            // Attempts to create the new user in the database, automatically hashing the password.
+            
             var result = await userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
@@ -77,15 +77,13 @@ namespace NewStudentAdmissionSystem.Controllers
                     var role = new IdentityRole("User");
                     await roleManager.CreateAsync(role);
                 }
-                // Assigns the newly created user to the "User" role.
+               
                 await userManager.AddToRoleAsync(user, "User");
 
-                // Signs the user in immediately after successful registration.
                 await signInManager.SignInAsync(user, isPersistent: false);
                 return RedirectToAction("Login", "Account");
             }
-            // If creation failed (e.g., duplicate email, weak password), iterates through errors 
-            // and adds them to ModelState to be displayed in the view.
+           
             foreach (var error in result.Errors)
             {
                 ModelState.AddModelError(string.Empty, error.Description);

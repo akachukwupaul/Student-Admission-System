@@ -22,14 +22,14 @@ namespace NewStudentAdmissionSystem.Controllers
             return View();
         }
         [HttpGet]
-        [Authorize(Roles = "User")]
+        //[Authorize(Roles = "User")]
         public IActionResult Register()
         {
             ViewBag.Courses = new SelectList(_Context.Courses, "Id", "Name");
             return View();
         }
         [HttpPost]
-        [Authorize(Roles = "User")]
+        //[Authorize(Roles = "User")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(StudentApplication model)
         {

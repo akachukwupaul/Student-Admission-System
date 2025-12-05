@@ -1,0 +1,9 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+@{
+    Layout = "_AdminLayout";
+}
+<h2>Welcome, @User.Identity.Name</h2>
+
+<a asp-action="Dashboard" class="btn btn-primary">Manage Student Admission</a>
