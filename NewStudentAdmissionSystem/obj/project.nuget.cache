@@ -197,12 +197,5 @@
     "C:\\Users\\Akachukwu Eze\\.nuget\\packages\\x.pagedlist\\8.4.7\\x.pagedlist.8.4.7.nupkg.sha512",
     "C:\\Users\\Akachukwu Eze\\.nuget\\packages\\x.pagedlist.mvc.core\\8.4.0\\x.pagedlist.mvc.core.8.4.0.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "NU1900",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Error occurred while getting package vulnerability data: Unable to load the service index for source https://api.nuget.org/v3/index.json."
-    }
-  ]
+  "logs": []
 }

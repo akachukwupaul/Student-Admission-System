@@ -21,7 +21,7 @@
         /* Sidebar styling */
         .sidebar {
             width: 250px;
-            background-color: #212529;
+            background-color: #28a745;
             color: white;
             padding-top: 25px;
         }
@@ -73,11 +73,25 @@
             Dashboard
         </a>
 
-        <a asp-action="StudentRecords">
-            <i class="bi bi-people"></i> Student Records
-        </a>
+        <div class="dropdown-menu-item">
+            <a href="#" class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#studentMenu" aria-expanded="false">
+                <i class="bi bi-people"></i> Student Records
+            </a>
+            <div class="collapse" id="studentMenu">
+                <a href="#" class="sub-menu-item">
+                    Student Management
+                </a>
+                <a href="#" class="sub-menu-item">
+                    Add New Student
+                </a>
+            </div>
+        </div>
 
-        <a href="/Account/Logout">
+        <a class="nav-link" asp-controller="Student" asp-action="CheckStatus">
+            Check Admission Status
+            </a>
+
+        <a href="@Url.Action("Index", "Home")">
             <i class="bi bi-box-arrow-right"></i> Logout
         </a>
     </div>

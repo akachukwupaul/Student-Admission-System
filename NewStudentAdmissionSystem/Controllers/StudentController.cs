@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿//using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -16,11 +16,11 @@ namespace NewStudentAdmissionSystem.Controllers
             _Context = context;
         }
 
-        [Authorize(Roles = "User")]
-        public IActionResult Dashboard()
-        {
-            return View();
-        }
+        //[Authorize(Roles = "User")]
+        //public IActionResult Dashboard()
+        //{
+        //    return View();
+        //}
         [HttpGet]
         //[Authorize(Roles = "User")]
         public IActionResult Register()
@@ -33,13 +33,13 @@ namespace NewStudentAdmissionSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(StudentApplication model)
         {
-            // Checks if the data submitted in the model object is valid.
+           
             if (ModelState.IsValid)
             {
-                // Create a new instance of the database entity model (StudentApplication).
+                
                 var student = new StudentApplication
                 {
-                    // Map data from the incoming form model to the database entity model.
+                    
                     FirstName = model.FirstName,
                     LastName = model.LastName,
                     EmailAddress = model.EmailAddress,
@@ -58,17 +58,13 @@ namespace NewStudentAdmissionSystem.Controllers
 
                 return View("RegistrationSuccess");
             }
-            // Log invalid fields for debugging
-            //foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-            //{
-            //    Console.WriteLine("Validation Error: " + error.ErrorMessage);
-            //}
+
 
             ViewBag.Courses = new SelectList(_Context.Courses, "Id", "Name");
             return View(model);       
         }
         [HttpGet]
-        [AllowAnonymous]
+        
         public IActionResult CheckStatus()
         {
             return View();
@@ -77,7 +73,7 @@ namespace NewStudentAdmissionSystem.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult CheckStatus(string ApplicationNumber)
         {
-            // Checks if the database query returned a student record.
+            
             if (string.IsNullOrEmpty(ApplicationNumber))
             {
                 ViewBag.Message = "Please enter your application number";
@@ -122,7 +118,7 @@ namespace NewStudentAdmissionSystem.Controllers
             return View();
 
         }
-
+        
 
     }
 }

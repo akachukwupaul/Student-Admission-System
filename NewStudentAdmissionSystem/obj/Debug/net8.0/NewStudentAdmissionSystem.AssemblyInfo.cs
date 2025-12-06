@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("NewStudentAdmissionSystem")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4294837dcf75cf4b4e9c04888944b0a91551f6b4")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+991075f5d3f735bcc619bdb007c8580c3e1aadbb")]
 [assembly: System.Reflection.AssemblyProductAttribute("NewStudentAdmissionSystem")]
 [assembly: System.Reflection.AssemblyTitleAttribute("NewStudentAdmissionSystem")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

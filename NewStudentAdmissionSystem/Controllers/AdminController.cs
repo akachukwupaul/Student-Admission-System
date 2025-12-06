@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NewStudentAdmissionSystem.Constants;
 using NewStudentAdmissionSystem.Data;
@@ -121,18 +122,21 @@ namespace NewStudentAdmissionSystem.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(int id)
-        {         
-            var student = await _Context.StudentApplications.FirstOrDefaultAsync(x => x.Id == id);
+        public async Task<IActionResult> EditStudent(int id)
+        {
+            var student = await _Context.StudentApplications.
+                 Include(c => c.Course)
+                 .FirstOrDefaultAsync(x => x.Id == id);
             if (student == null)
             {
                 return NotFound();
             }
+            ViewBag.Courses = new SelectList(_Context.Courses, "Id", "Name", student.CourseId);
             return View(student);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id, FirstName, LastName, EmailAddress, CourseId, PhoneNumber, DateOfBirth, DateOfApplication")] StudentApplication student)
+        public async Task<IActionResult> EditStudent(int id, StudentApplication student)
         {
             if (id != student.Id)
             {
@@ -140,19 +144,26 @@ namespace NewStudentAdmissionSystem.Controllers
             }
             if (ModelState.IsValid)
             {
-                _Context.Update(student);
-                await _Context.SaveChangesAsync();
-                return RedirectToAction(nameof(Dashboard));
+                try
+                {
+                    _Context.Update(student);
+                    await _Context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    return NotFound();
+                }
+                return RedirectToAction("Dashboard");
             }
+            ViewBag.Courses = new SelectList(_Context.Courses, "Id", "Name", student.CourseId);
             return View(student);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> DeleteStudent(int id)
         {
             var student = await _Context.StudentApplications.FirstOrDefaultAsync();
             return View(student);
-
 
         }
 
@@ -163,8 +174,9 @@ namespace NewStudentAdmissionSystem.Controllers
             if (student != null)
             {
                 _Context.StudentApplications.Remove(student);
-                await _Context.SaveChangesAsync();
             }
+            await _Context.SaveChangesAsync();
+            TempData["Success"] = "Student Deleted Successfully";
             return RedirectToAction("Dashboard");
         }
 
