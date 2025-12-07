@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using NewStudentAdmissionSystem.Constants;
 using NewStudentAdmissionSystem.Data;
 using NewStudentAdmissionSystem.Models;
+using NewStudentAdmissionSystem.Services;
 using X.PagedList;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
@@ -14,9 +15,11 @@ namespace NewStudentAdmissionSystem.Controllers
     public class AdminController : Controller
     {
         private readonly AppDbContext _Context;
-        public AdminController(AppDbContext context)
+        private readonly IStudentService _StudentService;
+        public AdminController(AppDbContext context, IStudentService studentService)
         {
             _Context = context;
+            _StudentService = studentService;
         }
 
         [HttpGet]
@@ -51,10 +54,10 @@ namespace NewStudentAdmissionSystem.Controllers
         {
             int PageSize = 7;
 
-            // CALL THE HELPER: Build the dynamic query.
+            
             var query = BuildStudentQuery(searchString);
 
-            // Continue with view setup and execution.
+            
             ViewBag.SearchString = searchString;
 
             var paginatedData = await query
@@ -62,7 +65,7 @@ namespace NewStudentAdmissionSystem.Controllers
                 .ToPagedListAsync(page, PageSize);
 
             return View(paginatedData);
-            // return View(await application.ToListAsync());
+            
         }
         [HttpGet]
         public async Task<IActionResult> StudentRecords(string searchString, int page = 1)
@@ -116,9 +119,31 @@ namespace NewStudentAdmissionSystem.Controllers
             student.Status = status;
             _Context.Update(student);
             await _Context.SaveChangesAsync();
-           
 
+            TempData["SuccessMessage"] = $"Student status updated to {status}.";
             return RedirectToAction(nameof(Dashboard));
+        }
+
+        [HttpGet]
+        public IActionResult AddStudent()
+        {
+            ViewBag.Courses = new SelectList(_Context.Courses, "Id", "Name");
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddStudent(StudentApplication model)
+        {
+            if (ModelState.IsValid)
+            {
+                var applicationNumber = await _StudentService.RegisterStudent(model);
+                TempData["SuccessMessage"] = $"Student registered successfully! Application Number: {applicationNumber}";
+                return RedirectToAction("Dashboard");
+            }
+
+            ViewBag.Courses = new SelectList(_Context.Courses, "Id", "Name");
+            return View(model);
         }
 
         [HttpGet]
@@ -148,9 +173,11 @@ namespace NewStudentAdmissionSystem.Controllers
                 {
                     _Context.Update(student);
                     await _Context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Student information updated successfully!";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
+                    TempData["ErrorMessage"] = "Unable to update student information. Please try again.";
                     return NotFound();
                 }
                 return RedirectToAction("Dashboard");
@@ -170,15 +197,40 @@ namespace NewStudentAdmissionSystem.Controllers
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var student = await _Context.StudentApplications.FindAsync(id);
-            if (student != null)
+            try
             {
-                _Context.StudentApplications.Remove(student);
+                var student = await _Context.StudentApplications.FindAsync(id);
+                if (student != null)
+                {
+                    _Context.StudentApplications.Remove(student);
+                }
+                await _Context.SaveChangesAsync();
+                TempData["SuccessMessage"] = $"Student {student.FirstName} {student.LastName} deleted successfully!";
+                return RedirectToAction("Dashboard");
             }
-            await _Context.SaveChangesAsync();
-            TempData["Success"] = "Student Deleted Successfully";
-            return RedirectToAction("Dashboard");
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Unable to delete student. Please try again.";
+                return RedirectToAction("Dashboard");
+            }
         }
 
+        [HttpGet]
+        public IActionResult CheckStudentStatus()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CheckStudentStatus(string ApplicationNumber)
+        {
+            var (student, message) = await _StudentService.CheckApplicationStatus(ApplicationNumber);
+
+            ViewBag.Message = message;
+            ViewBag.Student = student;
+
+            return View();  
+        }
     }
 }

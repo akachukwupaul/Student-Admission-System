@@ -38,8 +38,6 @@
                 <td>@student.DateOfApplication.ToShortDateString()</td>
                 <td>@student.Course?.Name</td>
                 <td>
-                    <a asp-action="Details" asp-route-Id ="@student.Id" class="btn btn-info">View</a>
-
                     <form asp-action="UpdateStatus" method="post" style="display:inline">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="id" value="@student.Id" />

@@ -1,0 +1,37 @@
+﻿@model NewStudentAdmissionSystem.Models.StudentApplication
+
+@{
+    ViewData["Title"] = "Check Student Status";
+    Layout = "_AdminLayout";
+}
+
+<div class="account-container">
+    <div class="account-box">
+        <h2>Check Admission Status</h2>
+
+        <form asp-action="CheckStudentStatus" method="post">
+            @Html.AntiForgeryToken()
+            <div class="form-group">
+                <label for="applicationNumber">Application Number</label>
+                <input type="text" name="applicationNumber" placeholder="Enter Student Application number" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">Check Status</button>
+        </form>
+        @if (ViewBag.Student != null)
+        {
+            <div class="alert alert-info m-3">
+                <strong>@ViewBag.Message</strong>
+            </div>
+        }
+        @if (ViewBag.Student != null)
+        {
+            <div class="mt-3 p-3 border rounded">
+                <h3>Application Details</h3>
+                <p><strong>Student Name:</strong> @ViewBag.Student.FirstName  @ViewBag.Student.LastName</p>
+                <p><strong>Application Number: </strong> @ViewBag.Student.ApplicationNumber</p>
+                <p><strong>Course Applied: </strong>  @ViewBag.Student.Course?.Name</p>
+                <p><strong>Status: </strong> @ViewBag.Student.Status</p>
+            </div>
+        }
+    </div>
+</div>

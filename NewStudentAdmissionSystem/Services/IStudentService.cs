@@ -1,6 +1,10 @@
-﻿namespace NewStudentAdmissionSystem.Services
+﻿using NewStudentAdmissionSystem.Models;
+
+namespace NewStudentAdmissionSystem.Services
 {
-    public class IStudentService
+    public interface IStudentService
     {
+        Task<string> RegisterStudent(StudentApplication model);
+        Task<(StudentApplication student, string message)> CheckApplicationStatus(string applicationNumber);
     }
 }

@@ -6,13 +6,13 @@
 <h2>Student Details</h2>
 
 <div>
-    <p><strong>Application Number:</strong>@Model.ApplicationNumber</p>
-    <p><strong>First Name:</strong>@Model.FirstName</p>
-    <p><strong>Last Name:</strong>@Model.LastName</p>
-    <p><strong>Course:</strong>@Model.Course?.Name</p>
-    <p><strong>Status:</strong>@Model.Status</p>
-    <p><strong>Date of birth</strong>@Model.DateOfBirth.ToShortDateString()</p>
-    <p><strong>Date of Registration</strong>@Model.DateOfApplication.ToShortDateString()</p>
+    <p><strong>Application Number: </strong>@Model.ApplicationNumber</p>
+    <p><strong>First Name: </strong>@Model.FirstName</p>
+    <p><strong>Last Name: </strong>@Model.LastName</p>
+    <p><strong>Course: </strong>@Model.Course?.Name</p>
+    <p><strong>Status: </strong>@Model.Status</p>
+    <p><strong>Date of birth: </strong>@Model.DateOfBirth.ToShortDateString()</p>
+    <p><strong>Date of Registration: </strong>@Model.DateOfApplication.ToShortDateString()</p>
 </div>
 
 <a asp-action="Dashboard" class="btn btn-secondary">Back to dashboard</a>
