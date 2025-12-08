@@ -60,24 +60,24 @@ namespace NewStudentAdmissionSystem.Services
 
            string message;
 
-switch (student.Status)
-{
-    case AdmissionStatus.ACCEPTED:
-        message = "Congratulations! Your application has been accepted.";
-        break;
+        switch (student.Status)
+        {
+            case AdmissionStatus.ACCEPTED:
+                message = "Congratulations! Your application has been accepted.";
+                break;
 
-    case AdmissionStatus.PENDING:
-        message = "Your application is under review. Please check back later.";
-        break;
+            case AdmissionStatus.PENDING:
+                message = "Your application is under review. Please check back later.";
+                break;
 
-    case AdmissionStatus.REJECTED:
-        message = "We regret to inform you that your application was not successful.";
-        break;
+            case AdmissionStatus.REJECTED:
+                message = "We regret to inform you that your application was not successful.";
+                break;
 
-    default:
-        message = "Unknown application status";
-        break;
-}
+            default:
+                message = "Unknown application status";
+                break;
+        }
 
             return (student, message);
         }

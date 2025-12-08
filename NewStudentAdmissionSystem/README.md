@@ -11,6 +11,8 @@ The system enables students to register online and check their admission status 
 - Search students by first name, last name, application number and course
 - Manage students application (Accept, Reject, Pending)
 - Pagination for large dataset
+- Create,view,update and delete student records
+- 
 
 ### Student Feature
 - Submit Admission application
@@ -45,7 +47,8 @@ The system enables students to register online and check their admission status 
 ## Admin Workflow
 - Log in to access the secure admin dashboard
 - View all students application with pagination and search functionality
-- Accept or reject student application using the action buttons
+- Accept or reject student application using the action buttons in the admin dashboard
 - Automatically updates the student's application status
-- manage application records and view student's application information
+- Manage students application record (View, update and delete student records)
+- Create new student record
 

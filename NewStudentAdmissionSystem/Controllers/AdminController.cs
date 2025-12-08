@@ -22,6 +22,7 @@ namespace NewStudentAdmissionSystem.Controllers
             _StudentService = studentService;
         }
 
+
         [HttpGet]
         public IActionResult AdminHome()
         {
@@ -30,12 +31,11 @@ namespace NewStudentAdmissionSystem.Controllers
 
         private IQueryable<StudentApplication> BuildStudentQuery(string searchString)
         {
-            // 1. Initialize Query
+            
             var query = _Context.StudentApplications
-                .Include(s => s.Course) // Eager loading
+                .Include(s => s.Course) 
                 .AsQueryable();
-
-            // 2. Apply Search Filter
+           
             if (!string.IsNullOrWhiteSpace(searchString))
             {
                 query = query.Where(s =>
@@ -49,41 +49,33 @@ namespace NewStudentAdmissionSystem.Controllers
             return query;
         }
 
+        private async Task<IPagedList<StudentApplication>> GetPagedStudents(string searchString, int page)
+        {
+            const int PageSize = 7;
+            var query = BuildStudentQuery(searchString);
+
+            return await query
+                .OrderByDescending(s => s.Id)
+                .ToPagedListAsync(page, PageSize);
+        }
+
         [HttpGet]
         public async Task<IActionResult> Dashboard(string searchString, int page = 1)
         {
-            int PageSize = 7;
+           ViewBag.SearchString = searchString;
+            var students = await GetPagedStudents(searchString, page);
 
-            
-            var query = BuildStudentQuery(searchString);
-
-            
-            ViewBag.SearchString = searchString;
-
-            var paginatedData = await query
-                .OrderByDescending(s => s.Id)
-                .ToPagedListAsync(page, PageSize);
-
-            return View(paginatedData);
+            return View(students);
             
         }
+
         [HttpGet]
         public async Task<IActionResult> StudentRecords(string searchString, int page = 1)
         {
-            int PageSize = 7;
-
-            // CALL THE HELPER: Use the identical logic here.
-            var query = BuildStudentQuery(searchString);
-
-            // Continue with view setup and execution.
             ViewBag.SearchString = searchString;
+            var students = await GetPagedStudents(searchString, page);
 
-            var paginatedData = await query
-                .OrderByDescending(s => s.Id)
-                .ToPagedListAsync(page, PageSize);
-
-            // Note: This will return the StudentRecords view.
-            return View(paginatedData);
+            return View(students);
         }
 
 
@@ -111,7 +103,7 @@ namespace NewStudentAdmissionSystem.Controllers
         {
             var student = await _Context.StudentApplications.FindAsync(id);
 
-            // Checks if the student application record was successfully found.
+            
             if (student == null)
             {
                 return NotFound();
@@ -123,6 +115,8 @@ namespace NewStudentAdmissionSystem.Controllers
             TempData["SuccessMessage"] = $"Student status updated to {status}.";
             return RedirectToAction(nameof(Dashboard));
         }
+
+
 
         [HttpGet]
         public IActionResult AddStudent()
@@ -145,6 +139,8 @@ namespace NewStudentAdmissionSystem.Controllers
             ViewBag.Courses = new SelectList(_Context.Courses, "Id", "Name");
             return View(model);
         }
+
+
 
         [HttpGet]
         public async Task<IActionResult> EditStudent(int id)
@@ -186,10 +182,13 @@ namespace NewStudentAdmissionSystem.Controllers
             return View(student);
         }
 
+
+
         [HttpGet]
         public async Task<IActionResult> DeleteStudent(int id)
         {
-            var student = await _Context.StudentApplications.FirstOrDefaultAsync();
+            var student = await _Context.StudentApplications
+                .FirstOrDefaultAsync(s => s.Id == id);
             return View(student);
 
         }
@@ -214,6 +213,7 @@ namespace NewStudentAdmissionSystem.Controllers
                 return RedirectToAction("Dashboard");
             }
         }
+
 
         [HttpGet]
         public IActionResult CheckStudentStatus()

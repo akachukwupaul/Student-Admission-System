@@ -15,16 +15,16 @@ namespace NewStudentAdmissionSystem.Services
             var logger = scope.ServiceProvider.GetRequiredService<ILogger<SeedService>>();
 
             try
-            {   // Ensure the data base is ready
+            {  
                 logger.LogInformation("Ensuring the database is created."); 
                 await context.Database.EnsureCreatedAsync();
 
-                //Add roles
+                
                 logger.LogInformation("Seeding Roles.");
                 await AddRoleAsync(roleManager, "Admin");
                 await AddRoleAsync(roleManager, "User");
 
-                //Add admin User
+                
                 logger.LogInformation("Seeding admin User.");
                 var adminEmail = "admin1@gmail.com";
 
@@ -58,8 +58,6 @@ namespace NewStudentAdmissionSystem.Services
             {
                 logger.LogError(ex, "An error occurred while seeding the database.");
             }
-
-
         }
         private static async Task AddRoleAsync(RoleManager<IdentityRole> roleManager, string roleName)
         {

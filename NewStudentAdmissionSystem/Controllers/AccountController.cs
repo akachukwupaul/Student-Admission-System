@@ -54,6 +54,10 @@ namespace NewStudentAdmissionSystem.Controllers
         }
     }
 }
+
+
+
+
 //[HttpGet]
 //public IActionResult Register()
 //{
@@ -67,7 +71,7 @@ namespace NewStudentAdmissionSystem.Controllers
 //    {
 //        return View(model);
 //    }
-//    // Creates a new instance of the custom user entity (Users) and maps data from the ViewModel.
+//    
 //    var user = new Users
 //    {
 //        FullName = model.Name,
