@@ -55,11 +55,9 @@
             new { page }),
             new PagedListRenderOptions
     {
-        // Display = PagedListDisplayMode.IfNeeded: Only displays the pager if there is more than one page of results.
+
         Display = PagedListDisplayMode.IfNeeded,
-        // to the unordered list (<ul>) tag that holds the page links.
         UlElementClasses = new[] { "pagination" },
-        // to each list item (<li>) tag, which contains an individual page link.
         LiElementClasses = new[] { "page-item" },
         PageClasses = new[] { "page-link" }
     }

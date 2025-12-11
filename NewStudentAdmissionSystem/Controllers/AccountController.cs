@@ -33,14 +33,11 @@ namespace NewStudentAdmissionSystem.Controllers
             }
             var user = await userManager.FindByEmailAsync(model.Email);
 
-            // Core sign-in operation: attempts to sign the user in using their credentials.
             var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
             if (result.Succeeded)
             {
-                if (await userManager.IsInRoleAsync(user, "Admin"))
+                await userManager.IsInRoleAsync(user, "Admin");
                     return RedirectToAction("AdminHome", "Admin");
-                //else if (await userManager.IsInRoleAsync(user, "User"))
-
             }
             ModelState.AddModelError(string.Empty, "Invalid Login attempt");
             return View(model);

@@ -67,7 +67,7 @@ namespace NewStudentAdmissionSystem.Controllers
 
             return View();
         }
-        // This makes the data available for rendering in the view.}
+       
     }
 
  }

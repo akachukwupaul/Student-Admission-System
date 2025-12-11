@@ -22,7 +22,6 @@ namespace NewStudentAdmissionSystem.Controllers
             _StudentService = studentService;
         }
 
-
         [HttpGet]
         public IActionResult AdminHome()
         {
@@ -78,25 +77,6 @@ namespace NewStudentAdmissionSystem.Controllers
             return View(students);
         }
 
-
-        [HttpGet]
-        public async Task<IActionResult> Details(int? id)
-        {
-            
-            if (id == null)
-            {
-                return NotFound();
-            }
-            var student = await _Context.StudentApplications
-                .Include(c => c.Course)
-                .FirstOrDefaultAsync(s => s.Id == id);
-            if (student == null)
-            {
-                return NotFound();
-            }
-            return View(student);
-        }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateStatus(int id, AdmissionStatus status)
@@ -140,6 +120,25 @@ namespace NewStudentAdmissionSystem.Controllers
             return View(model);
         }
 
+
+        [HttpGet]
+        public async Task<IActionResult> Details(int? id)
+        {
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var student = await _Context.StudentApplications
+                .Include(c => c.Course)
+                .FirstOrDefaultAsync(s => s.Id == id);
+
+            if (student == null)
+            {
+                return NotFound();
+            }
+            return View(student);
+        }
 
 
         [HttpGet]

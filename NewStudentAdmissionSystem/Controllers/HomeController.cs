@@ -26,22 +26,9 @@ namespace NewStudentAdmissionSystem.Controllers
 
         public IActionResult Apply()
         {
-            // Redirect to application form
+           
             return RedirectToAction("ApplicationForm", "Admission");
         }
-
-        //[Authorize (Roles = "Admin")]
-        //public IActionResult Admin()
-        //{
-        //    return View();
-        //}
-
-        //[Authorize(Roles = "User")]
-
-        //public IActionResult User()
-        //{
-        //    return View();
-        //}
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

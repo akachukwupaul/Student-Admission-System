@@ -7,8 +7,10 @@ namespace NewStudentAdmissionSystem.Models
     {
         public int Id { get; set; }
         public string? ApplicationNumber { get; set; }
-        [Required]
+        [Required (ErrorMessage ="Enter your First name")]
         public string? FirstName { get; set; }
+
+        [Required(ErrorMessage = "Enter your Last name")]
         public string? LastName { get; set; }
 
         [Required, EmailAddress]
