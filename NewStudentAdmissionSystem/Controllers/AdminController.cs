@@ -16,10 +16,12 @@ namespace NewStudentAdmissionSystem.Controllers
     {
         private readonly AppDbContext _Context;
         private readonly IStudentService _StudentService;
-        public AdminController(AppDbContext context, IStudentService studentService)
+        private readonly IAdminService _AdminService;
+        public AdminController(AppDbContext context, IStudentService studentService, IAdminService adminService)
         {
             _Context = context;
             _StudentService = studentService;
+            _AdminService = adminService;
         }
 
         [HttpGet]
@@ -81,17 +83,13 @@ namespace NewStudentAdmissionSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateStatus(int id, AdmissionStatus status)
         {
-            var student = await _Context.StudentApplications.FindAsync(id);
-
-            
-            if (student == null)
+            var success = await _AdminService.UpdateStudentStatus(id, status);
+            if (!success)
             {
+                TempData["SuccessMessage"] = "Student not found.";
                 return NotFound();
             }
-            student.Status = status;
-            _Context.Update(student);
-            await _Context.SaveChangesAsync();
-
+                
             TempData["SuccessMessage"] = $"Student status updated to {status}.";
             return RedirectToAction(nameof(Dashboard));
         }
@@ -129,9 +127,8 @@ namespace NewStudentAdmissionSystem.Controllers
             {
                 return NotFound();
             }
-            var student = await _Context.StudentApplications
-                .Include(c => c.Course)
-                .FirstOrDefaultAsync(s => s.Id == id);
+            var student = await _AdminService.GetStudentDetails(id.Value);
+              
 
             if (student == null)
             {
@@ -144,9 +141,8 @@ namespace NewStudentAdmissionSystem.Controllers
         [HttpGet]
         public async Task<IActionResult> EditStudent(int id)
         {
-            var student = await _Context.StudentApplications.
-                 Include(c => c.Course)
-                 .FirstOrDefaultAsync(x => x.Id == id);
+            var student = await _AdminService.GetStudentDetails(id);
+
             if (student == null)
             {
                 return NotFound();
@@ -164,18 +160,17 @@ namespace NewStudentAdmissionSystem.Controllers
             }
             if (ModelState.IsValid)
             {
-                try
+                var success = await _AdminService.EditStudentRecord(student);
+                if (success)
                 {
-                    _Context.Update(student);
-                    await _Context.SaveChangesAsync();
                     TempData["SuccessMessage"] = "Student information updated successfully!";
+                    return RedirectToAction("Dashboard");
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
                     TempData["ErrorMessage"] = "Unable to update student information. Please try again.";
                     return NotFound();
                 }
-                return RedirectToAction("Dashboard");
             }
             ViewBag.Courses = new SelectList(_Context.Courses, "Id", "Name", student.CourseId);
             return View(student);
@@ -186,31 +181,31 @@ namespace NewStudentAdmissionSystem.Controllers
         [HttpGet]
         public async Task<IActionResult> DeleteStudent(int id)
         {
-            var student = await _Context.StudentApplications
-                .FirstOrDefaultAsync(s => s.Id == id);
+            var student = await _AdminService.GetStudentDetails(id);  
+            if (student == null)
+            {
+                return NotFound();
+            }
             return View(student);
 
         }
 
         [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            try
+            var (success, firstName, lastName) = await _AdminService.DeleteStudentRecord(id);
+
+            if (success)
             {
-                var student = await _Context.StudentApplications.FindAsync(id);
-                if (student != null)
-                {
-                    _Context.StudentApplications.Remove(student);
-                }
-                await _Context.SaveChangesAsync();
-                TempData["SuccessMessage"] = $"Student {student.FirstName} {student.LastName} deleted successfully!";
-                return RedirectToAction("Dashboard");
+                TempData["SuccessMessage"] = $"Student {firstName} {lastName} deleted successfully!";
             }
-            catch (Exception ex)
+            else
             {
                 TempData["ErrorMessage"] = "Unable to delete student. Please try again.";
-                return RedirectToAction("Dashboard");
             }
+
+            return RedirectToAction("Dashboard");
         }
 
 

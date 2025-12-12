@@ -7,7 +7,7 @@ namespace NewStudentAdmissionSystem.Services
     {
         Task<bool> StudentExists(int id);
         Task<bool> UpdateStudentStatus(int id, AdmissionStatus status);
-        Task<StudentApplication> CheckStudentDetails(int id);
+        Task<StudentApplication> GetStudentDetails(int id);
         Task<bool> EditStudentRecord(StudentApplication student);
         Task<(bool, String FirstName, String LastName)> DeleteStudentRecord(int id);
     }

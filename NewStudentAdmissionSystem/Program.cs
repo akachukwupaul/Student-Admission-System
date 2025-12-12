@@ -27,6 +27,7 @@ builder.Services.AddIdentity<Users, IdentityRole>(options =>
     .AddDefaultTokenProviders();
 
 builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
 
 var app = builder.Build();
 

@@ -31,11 +31,11 @@ namespace NewStudentAdmissionSystem.Services
             return true;
         }
 
-        public async Task<StudentApplication> CheckStudentDetails(int id)
+        public async Task<StudentApplication> GetStudentDetails(int id)
         {
 
             var student = await _Context.StudentApplications
-               .Include(c => c.Course)
+               .Include(s => s.Course)
                .FirstOrDefaultAsync(s => s.Id == id);
 
             return(student);
