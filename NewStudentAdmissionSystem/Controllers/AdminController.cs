@@ -111,7 +111,7 @@ namespace NewStudentAdmissionSystem.Controllers
             {
                 var applicationNumber = await _StudentService.RegisterStudent(model);
                 TempData["SuccessMessage"] = $"Student registered successfully! Application Number: {applicationNumber}";
-                return RedirectToAction("Dashboard");
+                return RedirectToAction(nameof(Dashboard), "Admin");
             }
 
             ViewBag.Courses = new SelectList(_Context.Courses, "Id", "Name");
