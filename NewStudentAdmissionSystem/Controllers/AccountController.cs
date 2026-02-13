@@ -55,6 +55,30 @@ namespace NewStudentAdmissionSystem.Controllers
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //[HttpGet]
 //public IActionResult Register()
 //{

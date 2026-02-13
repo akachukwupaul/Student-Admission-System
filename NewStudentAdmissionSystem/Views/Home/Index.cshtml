@@ -6,16 +6,24 @@
 <div class="container">
     <div class="row justify-content-center align-items-center" style="min-height: 80vh;">
         <div class="col-md-8 text-center">
-            <h1 class="display-4 mb-4">Student Admission Portal</h1>
+            <h1 class="display-4 mb-4 fw-bold text-dark">Welcome to <span class="text-success">Student Admission Portal</span> </h1>
             <p class="lead mb-5">
-                Apply for admission and start your academic journey with us.
+                <strong> Join our community of excellence.<br>Apply for admission and start your academic journey with us.</strong>
             </p>
 
             <div class="d-grid gap-3 d-md-flex justify-content-md-center">
                 <a href="@Url.Action("Register", "Student")" class="btn btn-success btn-lg px-5">
                     Apply Now
-                </a>            
-            </div>
+                </a>
+
+                <a href="@Url.Action("CheckStatus", "Student")" class="btn btn-outline-success btn-lg px-5">
+                    Check Status
+                </a>
+            </div>          
         </div>
     </div>
 </div>
+
+<style>
+
+</style>
